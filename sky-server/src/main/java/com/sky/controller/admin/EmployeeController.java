@@ -89,6 +89,7 @@ public class EmployeeController {
         employeeService.save(employeeDTO);
         return Result.success();
     }
+
     /**
      * 员工分页查询
      *
@@ -102,4 +103,13 @@ public class EmployeeController {
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "启用/禁用员工状态")
+    public Result changeStatus(@PathVariable Integer status, @RequestParam Long id) {
+        log.info("修改员工状态：{}, {}", status, id);
+        employeeService.changeStatus(status, id);
+        return Result.success();
+    }
+
 }

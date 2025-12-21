@@ -76,7 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         BeanUtils.copyProperties(employeeDTO, employee);
 
         //设置初始密码
-        employee.setPassword(PasswordConstant.DEFAULT_PASSWORD);
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
         //设置员工状态为启用
         employee.setStatus(StatusConstant.ENABLE);
         //设置创建时间
@@ -100,5 +100,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //封装分页结果
         return new PageResult(pagelist.getTotal(), pagelist.getResult());
+    }
+
+
+    public void changeStatus(Integer status, Long id) {
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
     }
 }
