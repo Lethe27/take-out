@@ -6,4 +6,5 @@
 **/test/
 
 # 排除开发环境配置文件（核心规则）
+sky-server/src/main/resources/application.yml
 sky-server/src/main/resources/application-dev.yml
