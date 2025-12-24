@@ -52,15 +52,15 @@ public class UserServiceImpl implements UserService {
                     .build();
 
             userMapper.insert(user);
-            //为微信用户生成jwt令牌
-            Map<String, Object> claims = new HashMap<>();
-            claims.put(JwtClaimsConstant.USER_ID, user.getId());
-            String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
-
-            userLoginVO.setId(user.getId());
-            userLoginVO.setOpenid(user.getOpenid());
-            userLoginVO.setToken(token);
         }
+        //为微信用户生成jwt令牌
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaimsConstant.USER_ID, user.getId());
+        String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
+
+        userLoginVO.setId(user.getId());
+        userLoginVO.setOpenid(user.getOpenid());
+        userLoginVO.setToken(token);
         return userLoginVO;
     }
 
