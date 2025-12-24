@@ -1,10 +1,24 @@
+# ===================== 通用忽略规则 =====================
+# Maven/Gradle 编译产物（覆盖所有目录下的target）
 **/target/
+# IDE 配置文件（IntelliJ IDEA）
 .idea
 *.iml
+# Java 编译产物
 *.class
+# 测试相关（根据实际需求调整）
+# 忽略所有Test开头/结尾的测试类（选其一，或注释掉）
 *Test.java
 **/test/
 
-# 排除开发环境配置文件（核心规则）
-sky-server/src/main/resources/application.yml
-sky-server/src/main/resources/application-dev.yml
+# ===================== 项目专属规则 =====================
+# 忽略所有目录下的 application.yml（无论在哪个模块/目录）
+**/application.yml
+# 忽略所有目录下的 application-dev.yml
+**/application-dev.yml
+
+# 其他可选忽略项（按需添加）
+*.log        # 日志文件
+*.tmp        # 临时文件
+*.bak        # 备份文件
+.DS_Store    # Mac系统文件**/target/
