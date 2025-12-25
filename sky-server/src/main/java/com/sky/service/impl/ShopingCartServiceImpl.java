@@ -106,7 +106,7 @@ public class ShopingCartServiceImpl implements ShoppingCartService {
                 shoppingCartMapper.update(shoppingCart1);
             } else {
                 //数量等于1，删除该商品
-                shoppingCartMapper.deleteById(shoppingCart1.getId());
+                shoppingCartMapper.deleteByUserId(shoppingCart1.getId());
             }
         }
     }
@@ -119,7 +119,7 @@ public class ShopingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = ShoppingCart.builder().userId(userId).build();
         List<ShoppingCart> shoppingCartList = shoppingCartMapper.list(shoppingCart);
         for (ShoppingCart cart : shoppingCartList) {
-            shoppingCartMapper.deleteById(cart.getId());
+            shoppingCartMapper.deleteByUserId(cart.getId());
         }
     }
 }
