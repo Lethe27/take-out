@@ -19,4 +19,56 @@
              #{item.setmealId}, #{item.dishFlavor}, #{item.amount})
         </foreach>
     </insert>
+
+    <update id="update" parameterType="com.sky.entity.Orders">
+        update orders
+        <set>
+            <if test="cancelReason != null and cancelReason!='' "> cancel_reason=#{cancelReason}, </if>
+            <if test="rejectionReason != null and rejectionReason!='' "> rejection_reason=#{rejectionReason}, </if>
+            <if test="cancelTime != null"> cancel_time=#{cancelTime}, </if>
+            <if test="payStatus != null"> pay_status=#{payStatus}, </if>
+            <if test="payMethod != null"> pay_method=#{payMethod}, </if>
+            <if test="checkoutTime != null"> checkout_time=#{checkoutTime}, </if>
+            <if test="status != null"> status = #{status}, </if>
+            <if test="deliveryTime != null"> delivery_time = #{deliveryTime} </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="pageQuery" resultType="com.sky.entity.Orders">
+        select *
+        from orders
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="number != null and number != '' ">
+                and number = #{number}
+            </if>
+            <if test="phone != null and number != '' ">
+                and phone = #{phone}
+            </if>
+            <if test="beginTime != null">
+                and order_time &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null">
+                and order_time &lt;= #{endTime}
+            </if>
+        </where>
+        order by order_time desc
+    </select>
+
+    <select id="getDishesByOrderId" resultType="java.lang.String">
+        select
+            ifnull(group_concat(distinct d.name separator ','), '') as all_dish_names,
+            count(distinct d.id) as dish_count  -- 统计去重后的菜品数量（用d.id更精准，避免名称重复）
+        from order_detail od
+                 left join setmeal_dish sd on od.setmeal_id = sd.setmeal_id
+                 join dish d on (od.dish_id = d.id or sd.dish_id = d.id)
+        where od.order_id = #{orderId}
+          and (od.dish_id is not null or sd.dish_id is not null);
+    </select>
+    <select id="countByStatus" resultType="java.lang.Integer">
+        select count(*) from orders
+        where status = #{status}
+    </select>
 </mapper>
