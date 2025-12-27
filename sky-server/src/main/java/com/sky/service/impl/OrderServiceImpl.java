@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -23,6 +24,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -54,6 +58,9 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 
     @Autowired
     private  SearchHttpAKUtil searchHttpAKUtil;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     //距离限制
     private final double DELIVERY_RANGE = 5.0;
@@ -186,8 +193,6 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
     }
 
     private boolean validDistance(String address) {
-        //TODO 验证用户地址是否在配送范围内
-
         String location = null;
         try {
             location = searchHttpAKUtil.getLocation(address);
@@ -317,6 +322,14 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
                 .build();
 
         orderMapper.update(orders);
+
+        // 通过WebSocket推送来单通知 type orderId content
+        Map map = new HashMap();
+        map.put("type", 1); //1表示来单提醒 2表示客户催单
+        map.put("orderId", ordersDB.getId());
+        map.put("content", "订单号：" + outTradeNo + "，新订单待接单！");
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
+        System.out.println("订单支付成功，订单号：" + outTradeNo);
     }
 
     /**
@@ -515,4 +528,46 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
         updateOrder.setDeliveryTime(LocalDateTime.now());
         orderMapper.update(updateOrder);
     }
+
+    /**
+     * 订单支付修改版
+     * @param ordersPaymentDTO
+     * @return
+     */
+    @Override
+    public OrdersSubmitModifyDTO submitOrderModify(OrdersPaymentDTO ordersPaymentDTO) {
+        OrdersSubmitModifyDTO  ordersSubmitModifyDTO = new OrdersSubmitModifyDTO();
+
+        paySuccess(ordersPaymentDTO.getOrderNumber());
+        /*  获取预计送达时间*/
+        Orders ordersDB = orderMapper.getByNumber(ordersPaymentDTO.getOrderNumber());
+
+        ordersSubmitModifyDTO.setEstimatedDeliveryTime(ordersDB.getEstimatedDeliveryTime());
+
+        return ordersSubmitModifyDTO;
+    }
+
+    /**
+     * 客户催单
+     * @param id
+     */
+    public void reminder(Long id) {
+
+        // 根据订单号查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        if(ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        // 通过WebSocket推送催单通知 type orderId content
+        Map map = new HashMap();
+        map.put("type", 2); //1表示来单提醒 2表示客户催单
+        map.put("orderId", id);
+        map.put("content", "订单号：" + ordersDB.getNumber() + "，客户催单啦！");
+
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
+        System.out.println("客户催单，订单id：" + id);
+    }
+
 }

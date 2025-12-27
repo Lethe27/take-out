@@ -1,14 +1,17 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface OrderMapper {
@@ -68,4 +71,32 @@ public interface OrderMapper {
      * @return
      */
     Integer countByStatus(Integer status);
+
+    /**
+     * 查询超时未处理的订单
+     * @return
+     */
+    List<Orders> findOverTimeOrders(Integer status, LocalDateTime overTime);
+
+    /**
+     * 查询商品销量排名
+     * @param begin
+     * @param end
+     */
+    List<GoodsSalesDTO> getSalesTop10(LocalDateTime begin, LocalDateTime end);
+
+    /**
+     * 根据条件统计菜品数量
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
+
+
+    /**
+     * 根据条件统计销售额
+     * @param map
+     * @return
+     */
+    Double sumByMap(Map map);
 }
