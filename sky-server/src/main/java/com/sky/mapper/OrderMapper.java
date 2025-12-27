@@ -7,6 +7,7 @@ import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,4 +69,10 @@ public interface OrderMapper {
      * @return
      */
     Integer countByStatus(Integer status);
+
+    /**
+     * 查询超时未处理的订单
+     * @return
+     */
+    List<Orders> findOverTimeOrders(Integer status, LocalDateTime overTime);
 }

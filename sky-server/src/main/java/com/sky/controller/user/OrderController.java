@@ -4,6 +4,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.OrdersSubmitModifyDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
@@ -46,7 +47,7 @@ public class OrderController {
      * @param ordersPaymentDTO
      * @return
      */
-    @PutMapping("/payment")
+    @PutMapping("/paymentWithMoney")
     @ApiOperation("订单支付")
     public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception {
         log.info("订单支付：{}", ordersPaymentDTO);
@@ -55,6 +56,12 @@ public class OrderController {
         return Result.success(orderPaymentVO);
     }
 
+    @PutMapping("/payment")
+    @ApiOperation("订单支付个人修改版")
+    public Result<OrdersSubmitModifyDTO> paymentWithoutMoney(@RequestBody OrdersPaymentDTO ordersPaymentDTO){
+        OrdersSubmitModifyDTO ordersSubmitModifyDTO=orderService.submitOrderModify(ordersPaymentDTO);
+        return  Result.success(ordersSubmitModifyDTO);
+    }
     /**
      * 历史订单查询
      *
@@ -115,4 +122,16 @@ public class OrderController {
         return Result.success();
     }
 
+    /**
+     * 用户催单
+     * @param id
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("用户催单")
+    public Result reminder(@PathVariable Long id) {
+        log.info("用户催单：id={}", id);
+        orderService.reminder(id);
+        return Result.success();
+    }
 }

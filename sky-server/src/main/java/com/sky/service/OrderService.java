@@ -49,4 +49,8 @@ public interface OrderService {
     void delivery(Long id);
 
     void complete(Long id);
+
+    OrdersSubmitModifyDTO submitOrderModify(OrdersPaymentDTO ordersPaymentDTO);
+
+    void reminder(Long id);
 }
