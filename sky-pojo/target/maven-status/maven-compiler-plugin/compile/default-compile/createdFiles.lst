@@ -8,6 +8,7 @@ com\sky\dto\GoodsSalesDTO.class
 com\sky\entity\Setmeal.class
 com\sky\vo\OrderVO.class
 com\sky\vo\OrderReportVO$OrderReportVOBuilder.class
+com\sky\dto\OrdersSubmitModifyDTO.class
 com\sky\entity\Employee$EmployeeBuilder.class
 com\sky\vo\DishItemVO$DishItemVOBuilder.class
 com\sky\vo\EmployeeLoginVO.class
