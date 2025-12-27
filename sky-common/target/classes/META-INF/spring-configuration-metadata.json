@@ -11,6 +11,11 @@
       "sourceType": "com.sky.properties.JwtProperties"
     },
     {
+      "name": "sky.map",
+      "type": "com.sky.properties.MapProperties",
+      "sourceType": "com.sky.properties.MapProperties"
+    },
+    {
       "name": "sky.wechat",
       "type": "com.sky.properties.WeChatProperties",
       "sourceType": "com.sky.properties.WeChatProperties"
@@ -70,6 +75,21 @@
       "type": "java.lang.Long",
       "sourceType": "com.sky.properties.JwtProperties",
       "defaultValue": 0
+    },
+    {
+      "name": "sky.map.ak",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.properties.MapProperties"
+    },
+    {
+      "name": "sky.map.output",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.properties.MapProperties"
+    },
+    {
+      "name": "sky.map.url",
+      "type": "java.lang.String",
+      "sourceType": "com.sky.properties.MapProperties"
     },
     {
       "name": "sky.wechat.api-v3-key",
